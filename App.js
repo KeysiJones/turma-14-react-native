@@ -3,8 +3,9 @@ import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View, Platform, Butt
 import axios from "axios";
 import { useEffect, useState } from 'react';
 import Botao from './components/Botao';
-import { Link, NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Login from './routes/Login';
 
 export default function App() {
 
@@ -13,6 +14,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Home" component={Homepage} />
         <Stack.Screen name="Detalhes" component={Detalhes} />
       </Stack.Navigator>
@@ -20,8 +22,9 @@ export default function App() {
   );
 }
 
-const Homepage = ({ navigation }) => {
+const Homepage = ({ navigation, route }) => {
   const [ imageList, setImageList ] = useState([]);
+  const userName = route.params.userName;
 
   useEffect(() => {
     axios.get('https://picsum.photos/v2/list?limit=10').then((response) => {
@@ -41,9 +44,7 @@ const Homepage = ({ navigation }) => {
               textAlign: 'center',
             }}
           >
-            {Platform.OS === 'ios'
-              ? 'Lista de imagens (iphone)'
-              : 'Lista de imagens (Android)'}
+            {userName && `Usuario: ${userName}`}
           </Text>
           <View style={{ rowGap: 10 }}>
             {imageList.map((image) => {
