@@ -1,13 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View, Platform, Button, Pressable } from 'react-native';
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View, Platform, Pressable } from 'react-native';
 import axios from "axios";
 import { useEffect, useState } from 'react';
 import Botao from './components/Botao';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './routes/Login';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
+  const setUserName = () => AsyncStorage.setItem('nomeDoUsuario', 'Jones')
+  const userName = AsyncStorage.getItem('nomeDoUsuario')
 
   const Stack = createNativeStackNavigator();
 
@@ -24,7 +27,7 @@ export default function App() {
 
 const Homepage = ({ navigation, route }) => {
   const [ imageList, setImageList ] = useState([]);
-  const userName = route.params.userName;
+  const [ corDeFundo, setCorDeFundo ] = useState('red');
 
   useEffect(() => {
     axios.get('https://picsum.photos/v2/list?limit=10').then((response) => {
@@ -36,16 +39,15 @@ const Homepage = ({ navigation, route }) => {
     <SafeAreaView style={{ display: 'flex', flex: 1 }}>
       <View style={styles.container}>
         <ScrollView style={{ display: 'flex', flex: 1, height: '100%' }}>
-          <Text
-            style={{
-              fontSize: 20,
-              marginBottom: 30,
-              marginTop: 30,
-              textAlign: 'center',
-            }}
-          >
-            {userName && `Usuario: ${userName}`}
-          </Text>
+          <Botao
+            title='Trocar de cor'
+            corDeFundo={corDeFundo}
+            onPress={() =>
+              setCorDeFundo((corDeFundo) =>
+                corDeFundo === 'purple' ? 'green' : 'purple'
+              )
+            }
+          />
           <View style={{ rowGap: 10 }}>
             {imageList.map((image) => {
               return (
